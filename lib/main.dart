@@ -7,8 +7,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      
+      return MaterialApp(
+      title: 'Esrgan Flutter',
+      home: Container(),
+      debugShowCheckedModeBanner: true,
     );
   }
 }
