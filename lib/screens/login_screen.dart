@@ -3,7 +3,7 @@
 // import 'package:flutter/gestures.dart';
 // import 'package:flutter/material.dart';
 // import '/screens/register_screen.dart';
-// import 'package:flutter_esrgan_app/widgets/google_sign_in_button.dart';
+// import '/google_sign_in_button.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import '../authentication/authentication.dart';
 // import '../widgets/scaler.dart';
