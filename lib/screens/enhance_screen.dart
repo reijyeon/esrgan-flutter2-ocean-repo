@@ -1,12 +1,14 @@
 import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
 import 'package:flutter/material.dart';
 
-class GalleryScreen extends StatefulWidget {
+class EnhanceScreen extends StatefulWidget {
+  const EnhanceScreen({Key? key}) : super(key: key);
+
   @override
-  _GalleryScreenState createState() => _GalleryScreenState();
+  _EnhanceScreenState createState() => _EnhanceScreenState();
 }
 
-class _GalleryScreenState extends State<GalleryScreen> {
+class _EnhanceScreenState extends State<EnhanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
