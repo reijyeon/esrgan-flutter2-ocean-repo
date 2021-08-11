@@ -1,3 +1,4 @@
+import 'package:esrgan_flutter2_ocean_app/screens/image_super.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: PageView(
         children: <Widget>[
           GalleryScreen(),
-          EnhanceScreen(),
+          //EnhanceScreen(),
+          ImageSuperResolution(),
           ProfileScreen(
             user: _user,
           ),
