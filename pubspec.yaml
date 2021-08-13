@@ -41,6 +41,7 @@ dependencies:
   email_validator: ^2.0.1
 
   google_fonts: ^2.1.0
+  gallery_saver: ^2.1.3
   #flutter_screen_scaler: ^2.0.0
   #relative_scale: ^2.0.0
 

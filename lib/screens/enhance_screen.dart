@@ -1,134 +1,110 @@
-// import 'dart:io';
+import 'dart:convert';
+import 'dart:io';
 
-// import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
+import 'package:esrgan_flutter2_ocean_app/widgets/scaler.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
+class EnhanceScreen extends StatefulWidget {
+  const EnhanceScreen({ Key? key }) : super(key: key);
+
+  @override
+  _EnhanceScreenState createState() => _EnhanceScreenState();
+}
+
+class _EnhanceScreenState extends State<EnhanceScreen> {
+  File? selectedImage;
+  String? message = "";
+
+  uploadImage() async {
+    final request = http.MultipartRequest(
+        "POST", Uri.parse("http://192.168.100.60:8080/upload"));
+
+    final headers = {"Content-type": "multipart/form-data"};
+
+    request.files.add(http.MultipartFile('image',
+        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
+        filename: "input"));
+
+    request.headers.addAll(headers);
+    final response = await request.send();
+    http.Response res = await http.Response.fromStream(response);
+    final resJson = jsonDecode(res.body);
+    message = resJson['message'];
+    setState(() {});
+  }
+
+  getImage() async {
+    final pickedImage =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    selectedImage = File(pickedImage!.path);
+    print(selectedImage);
+    setState(() {});
+  }
+
+  
 
 
-// class EnhanceScreen extends StatefulWidget {
-//   const EnhanceScreen({ Key? key }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+      ScreenScaler scaler = new ScreenScaler()..init(context);
 
-//   @override
-//   _EnhanceScreenState createState() => _EnhanceScreenState();
-// }
+      Widget imageBox = Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.0),
+      height: scaler.getHeight(40),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.grey,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(20))
+          ),
+          child: Column(children: [
+              Container(child: Icon(FontAwesomeIcons.timesCircle, size: 40,)), 
+              
+               selectedImage == null
+                ? Text("Please pick a imagfafasdfe to upload")
+                 : Image.file(selectedImage!, width: double.infinity, ),
+          ],)
+          );
 
-// class _EnhanceScreenState extends State<EnhanceScreen> {
-//   var _image;
-//   var imagePicker;
-//   dynamic _pickImageError;
+    Widget btnSelectImage = TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                onPressed: getImage,
+                icon: Icon(Icons.upload_file, color: Colors.white),
+                label: Text("Select Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        )));
 
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     imagePicker = new ImagePicker();
-//   }
+    Widget btnEnhanceImage = TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                onPressed: uploadImage,
+                icon: Icon(Icons.upload_file, color: Colors.white),
+                label: Text("Enhance Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        )));
 
-//   void _onImageButtonPressed(ImageSource source, BuildContext? context) async {
-//     try {
-//       XFile image = await imagePicker.pickImage(
-//         source: source,
-//         //maxWidth: maxWidth,
-//         //maxHeight: maxHeight,
-//         imageQuality: 100,
-//       );
-//       setState(() {
-//         _image = File(image.path);
-//       });
-//     } catch (e) {
-//       setState(() {
-//         _pickImageError = e;
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Widget btnChoosePhoto = ElevatedButton(
-//       child: Text('Select Image'),
-//       onPressed: () => _onImageButtonPressed(ImageSource.gallery, context),
-//       style: ElevatedButton.styleFrom(
-//         shape: new RoundedRectangleBorder(
-//             borderRadius: new BorderRadius.circular(30.0)),
-//       ),
-//     );
-
-//     Widget showImage = Container(
-//       width: double.infinity,
-//       height: 400,
-//       decoration: BoxDecoration(color: Colors.red[200]),
-//       child: _image != null
-//           ? Image.file(
-//               _image,
-//               width: 200.0,
-//               height: 200.0,
-//               fit: BoxFit.fitHeight,
-//             )
-//           : Container(
-//               decoration: BoxDecoration(color: Colors.red[200]),
-//               width: 200,
-//               height: 200,
-//               child: Icon(
-//                 Icons.camera_alt,
-//                 color: Colors.grey[800],
-//               ),
-//             ),
-//     );
-
-//       void pickImage() async {
-//     File pickedImg = await ImagePicker.pickImage(source: ImageSource.gallery);
-//     loadImage(pickedImg);
-//     fetchResponse(pickedImg);
-//   }
-
-//   void fetchResponse(File image) async {
-//     print('Fetch Response Called');
-
-//     final mimeTypeData =
-//         lookupMimeType(image.path, headerBytes: [0xFF, 0xD8]).split('/');
-
-//     final imageUploadRequest = http.MultipartRequest(
-//         'POST', Uri.parse("http://35.223.166.50:8080/generate"));
-
-//     final file = await http.MultipartFile.fromPath('image', image.path,
-//         contentType: MediaType(mimeTypeData[0], mimeTypeData[1]));
-
-//     imageUploadRequest.fields['ext'] = mimeTypeData[1];
-//     imageUploadRequest.files.add(file);
-//     try {
-//       final streamedResponse = await imageUploadRequest.send();
-//       final response = await http.Response.fromStream(streamedResponse);
-//       print(' Status Code: ${response.statusCode}');
-//       final Map<String, dynamic> responseData = json.decode(response.body);
-//       String outputFile = responseData['result'];
-//       displayResponseImage(outputFile);
-//     } catch (e) {
-//       print(e);
-//       return null;
-//     }
-//   }
-
-//   void displayResponseImage(String outputFile) {
-//     print("Updating Image");
-//     outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
-//     setState(() {
-//       imageOutput = Image(image: NetworkImage(outputFile));
-//     });
-//   }
-
-//   void loadImage(File file) {
-//     setState(() {
-//       img1 = Image.file(file);
-//     });
-//   }
-
-//     return MaterialApp(
-//       home: Scaffold(
-//         body: Container(
-//             child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [showImage, btnChoosePhoto],
-//         )),
-//       ),
-//     );
-//   }
-// }
+      return Scaffold(
+        appBar: AppBar(
+            title: AppBarTitle(),
+        ),
+        body: Center(
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+                imageBox,
+                btnSelectImage,
+                btnEnhanceImage
+            ],
+            ),
+        ),
+    );
+  }
+}
