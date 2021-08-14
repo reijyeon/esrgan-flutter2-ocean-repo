@@ -1,23 +1,40 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:esrgan_flutter2_ocean_app/screens/image_view.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/scaler.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class EnhanceScreen extends StatefulWidget {
-  const EnhanceScreen({ Key? key }) : super(key: key);
+  //const EnhanceScreen({ Key? key }) : super(key: key);
+
+  const EnhanceScreen({Key? key, required User user})
+      : _user = user,
+        super(key: key);
+
+  final User _user;
 
   @override
   _EnhanceScreenState createState() => _EnhanceScreenState();
 }
 
 class _EnhanceScreenState extends State<EnhanceScreen> {
+  late User _user;
   File? selectedImage;
+  File? upscaledImage;
   String? message = "";
+  bool isEnhanced = false; //AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+   @override
+  void initState() {
+    _user = widget._user;
+    super.initState();
+  }
 
   uploadImage() async {
     final request = http.MultipartRequest(
@@ -27,13 +44,14 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
 
     request.files.add(http.MultipartFile('image',
         selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
-        filename: "input"));
+        filename: _user.uid+"_input_image"));
 
     request.headers.addAll(headers);
     final response = await request.send();
     http.Response res = await http.Response.fromStream(response);
     final resJson = jsonDecode(res.body);
-    message = resJson['message'];
+    message = resJson['result'];
+    print(message);
     setState(() {});
   }
 
@@ -44,6 +62,14 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     print(selectedImage);
     setState(() {});
   }
+
+//   void displayResponseImage(String outputFile) {
+//     print("Updating Image");
+//     outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
+//     setState(() {
+//       upscaledImage = Image(image: NetworkImage(outputFile));
+//     });
+//   }
 
   
 
@@ -84,7 +110,16 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     Widget btnEnhanceImage = TextButton.icon(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue)),
-                onPressed: uploadImage,
+                              
+                onPressed:  uploadImage,
+
+                        //  Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(builder: (context) => ImageView(image: selectedImage!, orgImage: selectedImage!)),
+                        //     );
+            
+               
+             
                 icon: Icon(Icons.upload_file, color: Colors.white),
                 label: Text("Enhance Image",
                     style: TextStyle(

@@ -22,6 +22,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late User _user;
   bool _isSigningOut = false;
 
+  @override
+  void initState() {
+    _user = widget._user;
+
+    super.initState();
+  }
+
   Route _routeToSignInScreen() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => LoginScreen(),
@@ -39,13 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    _user = widget._user;
-
-    super.initState();
   }
 
   @override

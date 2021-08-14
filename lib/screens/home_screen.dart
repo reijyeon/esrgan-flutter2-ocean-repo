@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: PageView(
         children: <Widget>[
           GalleryScreen(),
-          EnhanceScreen(),
+          EnhanceScreen(user: _user,),
           //ImageSuperResolution(),
           ProfileScreen(
             user: _user,
