@@ -10,6 +10,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+import 'package:network_to_file_image/network_to_file_image.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 class EnhanceScreen extends StatefulWidget {
   //const EnhanceScreen({ Key? key }) : super(key: key);
 
@@ -36,7 +39,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     super.initState();
   }
 
-  uploadImage() async {
+  uploadImage(BuildContext context) async {
     final request = http.MultipartRequest(
         "POST", Uri.parse("http://192.168.100.60:8080/upload"));
 
@@ -52,8 +55,20 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     final resJson = jsonDecode(res.body);
     message = resJson['result'];
     print(message);
-    setState(() {});
-  }
+    upscaledImage = await _fileFromImageUrl(message!);
+    setState(() {
+         isEnhanced = true;
+    });
+
+    print("DJKSFHSKDJFHSDKJFHSDK" + upscaledImage.toString());
+//    ->  if isEnhance == True goTo()
+    if(isEnhanced) {
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: selectedImage!)),
+    );
+    }
+    }
 
   getImage() async {
     final pickedImage =
@@ -63,16 +78,53 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     setState(() {});
   }
 
-//   void displayResponseImage(String outputFile) {
-//     print("Updating Image");
-//     outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
-//     setState(() {
-//       upscaledImage = Image(image: NetworkImage(outputFile));
-//     });
+  void displayResponseImage(String outputFile) {
+    print("Updating Image");
+    outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
+    setState(() {
+      upscaledImage = Image(image: NetworkImage(outputFile)) as File?;
+    });
+  }
+
+//   Future<File> getImageFileFromAssets(Asset asset) async {
+//     final byteData = await asset.getByteData();
+
+//     final tempFile =
+//         File("${(await getTemporaryDirectory()).path}/${asset.name}");
+//     final file = await tempFile.writeAsBytes(
+//       byteData.buffer
+//           .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+//     );
+
+//     return file;
 //   }
 
-  
+Future<File> _fileFromImageUrl(String imageUrl) async {
+    Uri url = Uri.parse('http://192.168.100.60:8080/download/' + imageUrl);
+    print("LLLLLLLLLLLLLLL");
+    print(url);
+    //imageUrl = 'http://192.168.100.60:8080/download/' + imageUrl;
+    final response = await http.get(url);
 
+    final documentDirectory = await getApplicationDocumentsDirectory();
+
+    final file = File(join(documentDirectory.path, 'imagetest.png'));
+
+    file.writeAsBytesSync(response.bodyBytes);
+
+    return file;
+  }
+//   Future<File> _fileFromImageUrl() async {
+//     final response = await http.get('https://example.com/xyz.jpg' as Uri);
+
+//     final documentDirectory = await getApplicationDocumentsDirectory();
+
+//     final file = File(join(documentDirectory.path, 'imagetest.png'));
+
+//     file.writeAsBytesSync(response.bodyBytes);
+
+//     return file;
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +163,9 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue)),
                               
-                onPressed:  uploadImage,
+                onPressed: (){
+                    uploadImage(context);
+                },
 
                         //  Navigator.push(
                         //         context,
