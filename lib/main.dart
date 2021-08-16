@@ -1,3 +1,4 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,15 @@ class App extends StatelessWidget {
                   color: Colors.white,
                )),
         title: 'Esrgan Flutter',
-        home: LoginScreen(),
+        home: AnimatedSplashScreen(
+          duration: 3000,
+          splash: 'assets/images/esrganFlutterLogo.png',
+          nextScreen: LoginScreen(),
+          splashTransition: SplashTransition.fadeTransition,
+          //pageTransitionType: PageTransitionType.scale,
+          backgroundColor: Colors.white,
+          splashIconSize: 300,
+        ),
         debugShowCheckedModeBanner: true,
     );
   }

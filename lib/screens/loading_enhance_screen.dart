@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'image_view.dart';
 
@@ -14,8 +15,6 @@ class LoadingEnhanceScreen extends StatefulWidget {
 
   final User _user;
   final File _selectedImage;
-
-  //const LoadingEnhanceScreen({ Key? key }) : super(key: key);
 
   @override
   _LoadingEnhanceScreenState createState() => _LoadingEnhanceScreenState();
@@ -28,9 +27,8 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
     bool isEnhanced = false; 
     
     uploadImage(BuildContext context) async {
-        setState(() {
-            isEnhancing = true;
-        });
+        setState(() => isEnhancing = true);
+
         final request = http.MultipartRequest(
             "POST", Uri.parse("http://192.168.100.60:8080/upload"));
 
@@ -45,26 +43,19 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
         http.Response res = await http.Response.fromStream(response);
         final resJson = jsonDecode(res.body);
         message = resJson['result'];
-        print(message);
         upscaledImage = await _fileFromImageUrl(message!);
-        setState(() {
-            isEnhanced = true;
-        });
 
-        print("DJKSFHSKDJFHSDKJFHSDK" + upscaledImage.toString());
+        setState(() => isEnhanced = true);
+
         if(isEnhanced) {
-            Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: widget._selectedImage)),
-        );
+            Navigator.push(context,MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: widget._selectedImage)),
+            );
         }
     }
 
     Future<File> _fileFromImageUrl(String imageUrl) async {
     Uri url = Uri.parse('http://192.168.100.60:8080/download/' + imageUrl);
-    print("LLLLLLLLLLLLLLL");
-    print(url);
-    //imageUrl = 'http://192.168.100.60:8080/download/' + imageUrl;
+
     final response = await http.get(url);
 
     final documentDirectory = await getApplicationDocumentsDirectory();
@@ -79,7 +70,6 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
 @override
   void initState() {
     uploadImage(this.context);
-    // TODO: implement initState
     super.initState();
   }
 
@@ -88,8 +78,11 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
     
     return Scaffold(
         body: Center(
-        child: CircularProgressIndicator(),
-    ),
-    );
-  }
+        child: SpinKitCubeGrid(
+              color: Colors.blue,
+              size: 80.0,),
+              ),
+        );
+    }
 }
+
