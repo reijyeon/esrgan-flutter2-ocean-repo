@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:esrgan_flutter2_ocean_app/screens/image_view.dart';
+import 'package:esrgan_flutter2_ocean_app/screens/loading_enhance_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/scaler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,11 +28,13 @@ class EnhanceScreen extends StatefulWidget {
 }
 
 class _EnhanceScreenState extends State<EnhanceScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late User _user;
   File? selectedImage;
   File? upscaledImage;
   String? message = "";
-  bool isEnhanced = false; //AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  bool isEnhancing = false; 
+  bool isEnhanced = false; 
 
    @override
   void initState() {
@@ -39,36 +42,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     super.initState();
   }
 
-  uploadImage(BuildContext context) async {
-    final request = http.MultipartRequest(
-        "POST", Uri.parse("http://192.168.100.60:8080/upload"));
 
-    final headers = {"Content-type": "multipart/form-data"};
-
-    request.files.add(http.MultipartFile('image',
-        selectedImage!.readAsBytes().asStream(), selectedImage!.lengthSync(),
-        filename: _user.uid+"_input_image"));
-
-    request.headers.addAll(headers);
-    final response = await request.send();
-    http.Response res = await http.Response.fromStream(response);
-    final resJson = jsonDecode(res.body);
-    message = resJson['result'];
-    print(message);
-    upscaledImage = await _fileFromImageUrl(message!);
-    setState(() {
-         isEnhanced = true;
-    });
-
-    print("DJKSFHSKDJFHSDKJFHSDK" + upscaledImage.toString());
-//    ->  if isEnhance == True goTo()
-    if(isEnhanced) {
-        Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: selectedImage!)),
-    );
-    }
-    }
 
   getImage() async {
     final pickedImage =
@@ -99,21 +73,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
 //     return file;
 //   }
 
-Future<File> _fileFromImageUrl(String imageUrl) async {
-    Uri url = Uri.parse('http://192.168.100.60:8080/download/' + imageUrl);
-    print("LLLLLLLLLLLLLLL");
-    print(url);
-    //imageUrl = 'http://192.168.100.60:8080/download/' + imageUrl;
-    final response = await http.get(url);
 
-    final documentDirectory = await getApplicationDocumentsDirectory();
-
-    final file = File(join(documentDirectory.path, 'imagetest.png'));
-
-    file.writeAsBytesSync(response.bodyBytes);
-
-    return file;
-  }
 //   Future<File> _fileFromImageUrl() async {
 //     final response = await http.get('https://example.com/xyz.jpg' as Uri);
 
@@ -161,18 +121,38 @@ Future<File> _fileFromImageUrl(String imageUrl) async {
 
     Widget btnEnhanceImage = TextButton.icon(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                    backgroundColor: MaterialStateProperty.all(selectedImage !=null? Colors.blue: Colors.blue[200])),
                               
-                onPressed: (){
-                    uploadImage(context);
-                },
+                onPressed: ()=>
+selectedImage !=null? 
+                    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Enhance Image'),
+          content: const Text('Do you want to enhance this selected image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
+              
+              child: const Text('No', style: TextStyle(color: Colors.red),),
+            ),
+            TextButton(
+              onPressed: (){
+                   //Navigator.of(context).push(Loadig)
 
-                        //  Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(builder: (context) => ImageView(image: selectedImage!, orgImage: selectedImage!)),
-                        //     );
-            
-               
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
+  );
+                  //uploadImage(context);
+                  
+                  //Navigator.pop(context, uploadImage(context));
+                  
+                  
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        )) :  null,
+                         
              
                 icon: Icon(Icons.upload_file, color: Colors.white),
                 label: Text("Enhance Image",
@@ -180,20 +160,27 @@ Future<File> _fileFromImageUrl(String imageUrl) async {
                       color: Colors.white,
                         )));
 
-      return Scaffold(
-        appBar: AppBar(
-            title: AppBarTitle(),
-        ),
-        body: Center(
-            child: Column(
+
+     Widget body = Center(
+            child: isEnhancing ? 
+            Container(child: Text("HAHAHAHAAHAHAH"),) :
+             Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
                 imageBox,
                 btnSelectImage,
                 btnEnhanceImage
             ],
-            ),
+            )
+        );
+ 
+
+      return Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+            title: AppBarTitle(),
         ),
+        body: body
     );
   }
 }
