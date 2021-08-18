@@ -44,7 +44,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
 
 
 
-  getImage() async {
+  getImageFromGallery() async {
     final pickedImage =
         await ImagePicker().getImage(source: ImageSource.gallery);
     selectedImage = File(pickedImage!.path);
@@ -52,12 +52,53 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     setState(() {});
   }
 
+  getImageFromCamera() async {
+    final pickedImage =
+        await ImagePicker().getImage(source: ImageSource.camera);
+    selectedImage = File(pickedImage!.path);
+    print(selectedImage);
+    setState(() {});
+  }
+
+
+
   void displayResponseImage(String outputFile) {
     print("Updating Image");
     outputFile = 'http://35.223.166.50:8080/download/' + outputFile;
     setState(() {
       upscaledImage = Image(image: NetworkImage(outputFile)) as File?;
     });
+  }
+
+  
+
+  selectImage(parentContext) {
+    return showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Choose image by:"),
+          children: <Widget>[
+            SimpleDialogOption(
+                child: Text("Photo with Camera", style: TextStyle(color: Colors.blue),), 
+                onPressed: () async {
+                    await getImageFromCamera();
+                    Navigator.pop(context);
+                    }),
+            SimpleDialogOption(
+                child: Text("Image from Gallery",style: TextStyle(color: Colors.blue)),
+                onPressed: () async {
+                    await getImageFromGallery();
+                    Navigator.pop(context);
+                    }),
+            SimpleDialogOption(
+              child: Text("Cancel",style: TextStyle(color: Colors.red)),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
   }
 
 //   Future<File> getImageFileFromAssets(Asset asset) async {
@@ -90,36 +131,56 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
   Widget build(BuildContext context) {
       ScreenScaler scaler = new ScreenScaler()..init(context);
 
-      Widget imageBox = Container(
+      Widget imageBox = Container(    
       margin: EdgeInsets.symmetric(horizontal: 16.0),
       height: scaler.getHeight(40),
       width: double.infinity,
       decoration: BoxDecoration(
+          color:Colors.black12,
           border: Border.all(
-              color: Colors.grey,
+              color: Colors.black87//Colors.grey,
+
+
           ),
           borderRadius: BorderRadius.all(Radius.circular(20))
           ),
-          child: Column(children: [
-              Container(child: Icon(FontAwesomeIcons.timesCircle, size: 40,)), 
-              
-               selectedImage == null
-                ? Text("Please pick a imagfafasdfe to upload")
-                 : Image.file(selectedImage!, width: double.infinity, ),
+          child: ListView(children: [
+              Column(children: [
+                   Center(
+                   child: Container( child: selectedImage == null
+                ?  Image.asset("assets/images/please_select_Image_0.gif",  width: scaler.getWidth(80), height: scaler.getHeight(40), fit: BoxFit.fitHeight)
+                 :
+                   Image.file(selectedImage!, width: scaler.getWidth(80), height: scaler.getHeight(40), fit: BoxFit.fitHeight, ),),
+                 ),
+              ],)
           ],)
           );
 
-    Widget btnSelectImage = TextButton.icon(
+    //Widget imageBox =           
+
+
+
+
+
+
+
+    Widget btnSelectImage = 
+    Container(
+        margin: EdgeInsets.only(top: 12),
+        child: TextButton.icon(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue)),
-                onPressed: getImage,
+                onPressed: (){selectImage(context);},//getImage,
                 icon: Icon(Icons.upload_file, color: Colors.white),
                 label: Text("Select Image",
                     style: TextStyle(
                       color: Colors.white,
-                        )));
+                        ))));
+    
 
-    Widget btnEnhanceImage = TextButton.icon(
+    Widget btnEnhanceImage = Container(
+        margin: EdgeInsets.only(top: 8),
+        child: TextButton.icon(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(selectedImage !=null? Colors.blue: Colors.blue[200])),
                               
@@ -158,28 +219,49 @@ selectedImage !=null?
                 label: Text("Enhance Image",
                     style: TextStyle(
                       color: Colors.white,
-                        )));
+                        ))),
+    );
+
+    Widget btnTrash = Container(
+        child: Container(),
+    );
 
 
      Widget body = Center(
             child: isEnhancing ? 
             Container(child: Text("HAHAHAHAAHAHAH"),) :
-             Column(
+             Container(
+            decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                      //Color.fromARGB(255, 135, 221, 255),
+                    Color.fromARGB(35,55,103,255),
+                    Color.fromARGB(255, 135, 221, 255)
+                    
+                  ],
+                )),
+               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-                imageBox,
-                btnSelectImage,
-                btnEnhanceImage
+                  imageBox,
+                  btnSelectImage,
+                  btnEnhanceImage
             ],
-            )
+            ),
+             )
         );
  
 
       return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+            backgroundColor: Color.fromRGBO(35, 55, 103, 1),
             title: AppBarTitle(),
-        ),
+        ),//rgba(35,55,103,255)
+
+        backgroundColor: Color.fromRGBO(35, 55, 103, 1),
         body: body
     );
   }

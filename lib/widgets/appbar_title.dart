@@ -12,7 +12,7 @@ class AppBarTitle extends StatelessWidget {
           height: 65,
         ),
         Container(
-            padding: const EdgeInsets.all(8.0), child: Text('YourAppTitle'))
+            padding: const EdgeInsets.all(8.0), child: Text('YourAppTitle', style: TextStyle(color: Colors.black),))
       ],
     );
   }

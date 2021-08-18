@@ -49,6 +49,8 @@ dependencies:
   mime: ^1.0.0
   dio: ^4.0.0
   path: ^1.8.0
+  flutter_settings_screens: ^0.3.1-null-safety
+  shared_preferences: ^2.0.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -79,6 +81,10 @@ flutter:
     - assets/images/hr_esrgan.png
     - assets/images/lr_esrgan.png
     - assets/images/place_holder_image.jpg
+    - assets/images/please_select_Image_0.gif
+    - assets/images/please_select_Image_1.gif
+    - assets/images/please_select_Image_4.gif
+    - assets/images/please_select_Image_6.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,3 +1,4 @@
+import 'package:esrgan_flutter2_ocean_app/screens/account_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/screens/image_super.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,6 +72,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ProfileScreen(
             user: _user,
           ),
+          AccountScreen(
+            user: _user,
+          ),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
@@ -97,6 +101,11 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: FaIcon(FontAwesomeIcons.user),
               label: ('Profile'),
+            ),
+
+            BottomNavigationBarItem(
+              icon: FaIcon(FontAwesomeIcons.user),
+              label: ('Account'),
             ),
           ]),
     );
