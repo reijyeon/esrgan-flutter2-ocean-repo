@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,6 +34,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
   late User _user;
   File? selectedImage;
   File? upscaledImage;
+  var imgSize;
   String? message = "";
   bool isEnhancing = false; 
   bool isEnhanced = false; 
@@ -48,7 +51,9 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
     final pickedImage =
         await ImagePicker().getImage(source: ImageSource.gallery);
     selectedImage = File(pickedImage!.path);
+    imgSize = ImageSizeGetter.getSize(FileInput(selectedImage!));
     print(selectedImage);
+    print(imgSize);
     setState(() {});
   }
 
@@ -136,7 +141,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
       height: scaler.getHeight(40),
       width: double.infinity,
       decoration: BoxDecoration(
-          color:Colors.black12,
+          color:Colors.black, //.grey[400],
           border: Border.all(
               color: Colors.black87//Colors.grey,
 
@@ -150,8 +155,11 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
                    child: Container( child: selectedImage == null
                 ?  Image.asset("assets/images/please_select_Image_0.gif",  width: scaler.getWidth(80), height: scaler.getHeight(40), fit: BoxFit.fitHeight)
                  :
-                   Image.file(selectedImage!, width: scaler.getWidth(80), height: scaler.getHeight(40), fit: BoxFit.fitHeight, ),),
+                   Image.file(selectedImage!, width: scaler.getWidth(80), height: scaler.getHeight(35), fit: BoxFit.fitHeight, ),),
                  ),
+
+                Container(child: Text("AHJHAJKA"), color: Colors.blue,
+                width: double.infinity, height: 300,)
               ],)
           ],)
           );
@@ -201,7 +209,7 @@ selectedImage !=null?
               onPressed: (){
                    //Navigator.of(context).push(Loadig)
 
-                    Navigator.push(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
+                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
   );
                   //uploadImage(context);
                   

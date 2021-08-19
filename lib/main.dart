@@ -1,10 +1,20 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/screens/login_screen.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+// void main() {
+//   runApp(App());
+// }
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await FirebaseAppCheck.instance.activate(webRecaptchaSiteKey: 'recaptcha-v3-site-key');
   runApp(App());
 }
+
 class App extends StatelessWidget {
 
   @override

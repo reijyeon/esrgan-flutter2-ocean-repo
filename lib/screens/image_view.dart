@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
-
-
+import 'package:firebase_storage/firebase_storage.dart';
+final Reference storageRef = FirebaseStorage.instance.ref();
 class ImageView extends StatefulWidget {
   final File image;
   final File orgImage;
@@ -17,6 +17,16 @@ class ImageView extends StatefulWidget {
 
 class _ImageViewState extends State<ImageView> {
   double controller = 0.5;
+  //List<StorageUploadTask> _tasks = <StorageUploadTask>[];
+
+    Future<String> uploadImage() async {
+    UploadTask uploadTask =
+        storageRef.child("post.jpg").putFile(widget.image);
+    TaskSnapshot storageSnap = await uploadTask;
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
   @override
   Widget build(BuildContext context) {
     TensorImage imgProp = TensorImage.fromFile(widget.image);
@@ -24,6 +34,7 @@ class _ImageViewState extends State<ImageView> {
     
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Colors.red,
         title: Text('Result'),
         actions: [
           IconButton(
@@ -31,15 +42,45 @@ class _ImageViewState extends State<ImageView> {
             onPressed: () {
               //Navigator.pop(context);
               //Navigator.pop(context);
-              GallerySaver.saveImage(widget.image.path);
+              //GallerySaver.saveImage(widget.image.path); //NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED 4 later
               //print('Saved');
-              showDialog(context: context, builder: (_) => imageSaved(context));
+              //showDialog(context: context, builder: (_) => imageSaved(context)); //NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED 4 later
+              showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Save Image'),
+          content: const Text('Do you want to save image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
+              
+              child: const Text('No', style: TextStyle(color: Colors.red),),
+            ),
+            TextButton(
+              onPressed: uploadImage,//{
+
+//                    //Navigator.of(context).push(Loadig)
+
+//                     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
+//   );
+//                   //uploadImage(context);
+                  
+//                   //Navigator.pop(context, uploadImage(context));
+                  
+                  
+              //},
+              child: const Text('Yes'),
+            ),
+          ],
+        ));
+              
             },
           ),
         ],
       ),
       body: Stack(
         children: [
+            //Container(child: Text("FDSFDSFSDFS", style: TextStyle(color: Colors.white),), ),
           Container(
             /*child: PhotoView(
               imageProvider: FileImage(image),
@@ -56,6 +97,7 @@ class _ImageViewState extends State<ImageView> {
                 child: Stack(
                   
                   children: [
+                      
                     /*Image.file(
                       widget.orgImage, 
                       //height: imgProp.height.toDouble(), 
@@ -97,7 +139,7 @@ class _ImageViewState extends State<ImageView> {
                         
                       ),
                     ),
-                    
+                  
                   ],
                 ),
               ),
@@ -109,9 +151,11 @@ class _ImageViewState extends State<ImageView> {
             right: 10,
             bottom: 10,
             child: Slider(
+            
               value: controller,
               min: 0.0,
               max: 1.0,
+
               //activeColor: Colors.redAccent[100],
               //inactiveColor: Colors.red[50],
               onChanged: (newVal){
