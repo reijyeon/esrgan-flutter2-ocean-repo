@@ -62,6 +62,7 @@ dependencies:
   image_size_getter: ^1.0.0
   firebase_storage: ^10.0.2
   firebase_app_check: ^0.0.2
+  cached_network_image: ^3.1.0
 
 dev_dependencies:
   flutter_test:

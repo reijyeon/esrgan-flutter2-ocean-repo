@@ -1,15 +1,25 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:esrgan_flutter2_ocean_app/screens/trygallery.dart';
+//import 'package:esrgan_flutter2_ocean_app/screens/gallery_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+//import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 final Reference storageRef = FirebaseStorage.instance.ref();
+//final postsRef = Firestore.instance.collection('posts');
+
+final postsRef = FirebaseFirestore.instance.collection('posts');
+final DateTime timestamp = DateTime.now();
 class ImageView extends StatefulWidget {
+
+  final User user;
   final File image;
   final File orgImage;
 
-  ImageView({required this.image, required this.orgImage});
+  ImageView({required this.image, required this.orgImage, required this.user});
 
   @override
   _ImageViewState createState() => _ImageViewState();
@@ -19,13 +29,37 @@ class _ImageViewState extends State<ImageView> {
   double controller = 0.5;
   //List<StorageUploadTask> _tasks = <StorageUploadTask>[];
 
-    Future<String> uploadImage() async {
+    Future<void> uploadImage() async {
+    String postId = widget.user.uid +"_"+timestamp.toString().split(' ').join();
     UploadTask uploadTask =
-        storageRef.child("post.jpg").putFile(widget.image);
+        storageRef.child("post_$postId.jpg").putFile(widget.image);
     TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
-    return downloadUrl;
+    //return downloadUrl;
+    print(downloadUrl);
+    createPostInFirestore(mediaUrl: downloadUrl);
+    //Navigator.pushReplacement(context, newRoute)
+
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Gallery(user: widget.user)));
   }
+
+    createPostInFirestore(
+      {required String mediaUrl,
+      }) {
+    postsRef
+        .doc(widget.user.uid)
+        .collection("userPosts")
+        .doc(widget.user.uid +"_"+timestamp.toString().split(' ').join())
+        .set({
+      "imageId": widget.user.uid +"_"+timestamp.toString().split(' ').join(),
+      "userId": widget.user.uid,
+      "ownerId": widget.user.email,
+      "mediaUrl": mediaUrl,
+      "timestamp": timestamp,
+    });
+  }
+
+ 
 
   @override
   Widget build(BuildContext context) {

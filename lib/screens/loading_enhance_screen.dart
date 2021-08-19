@@ -48,7 +48,7 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
         setState(() => isEnhanced = true);
         print("HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         if(isEnhanced) {
-            Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: widget._selectedImage)),
+            Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ImageView(image: upscaledImage!, orgImage: widget._selectedImage, user: widget._user,)),
             );
         }
     }
