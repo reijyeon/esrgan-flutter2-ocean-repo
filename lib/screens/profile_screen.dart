@@ -1,11 +1,8 @@
-import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter_esrgan_app/widgets/appbar_title.dart';
 
 import '/screens/login_screen.dart';
 import '/authentication/authentication.dart';
-//import '/widgets/appbar_title.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key, required User user})
@@ -25,7 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     _user = widget._user;
-
     super.initState();
   }
 
@@ -52,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AppBarTitle(),
+        //title: AppBarTitle(),
         elevation: 0,
       ),
       //backgroundColor: CustomColors.firebaseNavy,

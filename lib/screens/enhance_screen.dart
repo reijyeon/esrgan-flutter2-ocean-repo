@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:esrgan_flutter2_ocean_app/screens/image_view.dart';
 import 'package:esrgan_flutter2_ocean_app/screens/loading_enhance_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
+import 'package:esrgan_flutter2_ocean_app/widgets/appbar_title.dart';
 import 'package:esrgan_flutter2_ocean_app/widgets/scaler.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -177,7 +178,7 @@ class _EnhanceScreenState extends State<EnhanceScreen> {
         margin: EdgeInsets.only(top: 12),
         child: TextButton.icon(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                    backgroundColor: MaterialStateProperty.all(Color(0xFF31a8ff))),
                 onPressed: (){selectImage(context);},//getImage,
                 icon: Icon(Icons.upload_file, color: Colors.white),
                 label: Text("Select Image",
@@ -208,6 +209,7 @@ selectedImage !=null?
             TextButton(
               onPressed: (){
                    //Navigator.of(context).push(Loadig)
+                   
 
                     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
   );
@@ -239,17 +241,17 @@ selectedImage !=null?
             child: isEnhancing ? 
             Container(child: Text("HAHAHAHAAHAHAH"),) :
              Container(
-            decoration: new BoxDecoration(
-                gradient: new LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                      //Color.fromARGB(255, 135, 221, 255),
-                    Color.fromARGB(35,55,103,255),
-                    Color.fromARGB(255, 135, 221, 255)
+            // decoration: new BoxDecoration(
+            //     gradient: new LinearGradient(
+            //       begin: Alignment.topCenter,
+            //       end: Alignment.bottomCenter,
+            //     //   colors: [
+            //     //       //Color.fromARGB(255, 135, 221, 255),
+            //     //     Color.fromARGB(35,55,103,255),
+            //     //     Color.fromARGB(255, 135, 221, 255)
                     
-                  ],
-                )),
+            //     //   ],
+            //     )),
                child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -264,13 +266,11 @@ selectedImage !=null?
 
       return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-            backgroundColor: Color.fromRGBO(35, 55, 103, 1),
-            title: AppBarTitle(),
-        ),//rgba(35,55,103,255)
+        appBar: customAppBar,
 
-        backgroundColor: Color.fromRGBO(35, 55, 103, 1),
-        body: body
+        //backgroundColor: Color.fromRGBO(35, 55, 103, 1),
+        body: body,
+        drawer: customAppBar,
     );
   }
 }

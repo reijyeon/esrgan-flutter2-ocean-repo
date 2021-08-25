@@ -10,12 +10,15 @@
 
 
 
+import 'package:esrgan_flutter2_ocean_app/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 //import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 //import 'package:esrgan_flutter2_ocean_app/widgets/scaler.dart';
 
 //import '../widgets/progress.dart';
@@ -79,9 +82,13 @@ final String imageId;
   required  this.userId
       });
 
+    User? user = FirebaseAuth.instance.currentUser;
+
+    
+
 
   // Note: To delete post, ownerId and currentUserId must be equal, so they can be used interchangeably
- 
+  
   buildPostImage() {
     return GestureDetector(
       onDoubleTap: () => print('liking post'),
@@ -92,12 +99,12 @@ final String imageId;
             width:
                 410.0, ////////////////////////////////////////////////////////////////////////
             height: 400.0,
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.black38, Colors.black38],
-            )),
+            // decoration: BoxDecoration(
+            //     gradient: LinearGradient(
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   colors: [Colors.black38, Colors.black38],
+            // )),
 
             child: Image.network(
               mediaUrl,
@@ -109,7 +116,106 @@ final String imageId;
     );
   }
 
-  
+    handleDeletePost(BuildContext parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Do want to delete the photo?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    await deletePost();
+                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => HomeScreen(user: user!, screenIndex: 0)));
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red),
+                  )),
+              SimpleDialogOption(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel')),
+            ],
+          );
+        });
+  }
+
+  // Note: To delete post, ownerId and currentUserId must be equal, so they can be used interchangeably
+  deletePost() async {
+    // delete post itself
+    postsRef
+        .doc(widget.userId)
+        .collection('userPosts')
+        .doc(widget.imageId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // delete uploaded image for thep ost
+    storageRef.child("post_$imageId.jpg").delete();
+  }
+
+  handleSaveImageToGallery(BuildContext parentContext){
+       showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Export Image'),
+          content: const Text('Do you want to export this image to your device?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
+              
+              child: const Text('No', style: TextStyle(color: Colors.red),),
+            ),
+            TextButton(
+              onPressed: (){
+                   //Navigator.of(context).push(Loadig)
+                   
+
+                   
+                  //uploadImage(context);
+                  //Navigator.pop(context, uploadImage(context));
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ));
+  }
+
+ Widget btnSaveImageToGallery(){
+    return Container(
+        margin: EdgeInsets.only(top: 12),
+        child: TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Color(0xFF31a8ff))),
+                onPressed: ()=>
+                    handleSaveImageToGallery(context)            
+                ,//getImage,
+                icon: FaIcon(FontAwesomeIcons.fileExport, color: Colors.white),
+                label: Text("Export Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        ))));
+ }
+ 
+  Widget btnDeleteImage(){
+    return Container(
+        margin: EdgeInsets.only(top: 12),
+        child: TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Color(0xFFcc0000))),
+                onPressed: ()=>
+                    handleDeletePost(context),//getImage,
+                icon: FaIcon(FontAwesomeIcons.trashAlt, color: Colors.white),
+                label: Text("Delete Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        ))));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -119,6 +225,22 @@ final String imageId;
           color: Colors.grey[600],
         ),
         buildPostImage(),
+        Divider(
+          color: Colors.grey[600],
+        ),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+                
+                Container(child: 
+                Column(
+                    children: [
+                                    
+        btnSaveImageToGallery(),
+        btnDeleteImage(),
+                    ],
+                ),)
+        ],)
+        
       ],
     );
   }

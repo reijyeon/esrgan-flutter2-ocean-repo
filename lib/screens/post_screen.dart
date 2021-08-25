@@ -28,9 +28,8 @@ class PostScreen extends StatelessWidget {
         Post post = Post.fromDocument(snapshot.data as DocumentSnapshot<Object>);
         return Center(
           child: Scaffold(
-            backgroundColor: Colors.blueGrey[900],
             appBar: AppBar(
-              backgroundColor: Colors.grey[900],
+              //backgroundColor: Colors.grey[900],
             ),
             body: ListView(
               children: <Widget>[

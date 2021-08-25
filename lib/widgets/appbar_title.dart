@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
 
-class AppBarTitle extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Image.asset(
-          "assets/images/esrganFlutterLogo.png",
-          fit: BoxFit.fill,
-          height: 65,
-        ),
-        Container(
-            padding: const EdgeInsets.all(8.0), child: Text('YourAppTitle', style: TextStyle(color: Colors.black),))
-      ],
+
+PreferredSizeWidget customAppBar = PreferredSize(
+    child: AppBar(
+        automaticallyImplyLeading: false,
+        leading: 
+                Image.asset(
+                    "assets/images/esrganFlutterLogo.png",
+                    fit: BoxFit.cover,
+                    height: 75
+                ),
+
+        title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+                Icon(Icons.menu, size: 38,),
+            ]),
+        //backgroundColor: Colors.blue[600],
+        flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[
+                        Color(0xFF2F455C),
+                        Color(0xFF2F455C)
+                        // Color(0xFF1f2430),
+                        //  Color(0xFF1f2430),
+                        //Color(0xFF21D0B2),
+                       // Color(0xFF1DCDFE),
+                        // Color(0xFF21D0B2),
+                        // Color(0xFF34F5C5),
+                        // Color(0xFF1DCDFE)
+                    ])          
+                )
+            )      
+        ), 
+    preferredSize: Size.fromHeight(60.0)
     );
-  }
-}
+
+    

@@ -21,9 +21,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
       return MaterialApp(
           theme: ThemeData(
-              appBarTheme: AppBarTheme(
-                  color: Colors.white,
-               )),
+                  scaffoldBackgroundColor: Color(0xFF1f2430),
+                  buttonTheme: ButtonThemeData(
+                      buttonColor: Color(0xFF31a8ff)
+                  ),
+                  appBarTheme: AppBarTheme(color: Color(0xFF2F455C))
+               ),
         title: 'Esrgan Flutter',
         home: AnimatedSplashScreen(
           duration: 3000,
@@ -34,10 +37,11 @@ class App extends StatelessWidget {
           backgroundColor: Colors.white,
           splashIconSize: 300,
         ),
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
     );
   }
 }
+
 
 // import 'package:animated_splash_screen/animated_splash_screen.dart';
 // import 'package:esrgan_flutter2_ocean_app/prefs/style.dart';

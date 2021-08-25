@@ -1,5 +1,6 @@
 import 'package:esrgan_flutter2_ocean_app/screens/account_screen.dart';
 import 'package:esrgan_flutter2_ocean_app/screens/image_super.dart';
+import 'package:esrgan_flutter2_ocean_app/screens/gallery_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,11 +13,12 @@ import '/authentication/authentication.dart';
 import '/widgets/scaler.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key, required User user})
-      : _user = user,
+  const HomeScreen({Key? key, required User user, required int screenIndex})
+      : _user = user, _screenIndex = screenIndex,
         super(key: key);
 
   final User _user;
+  final int _screenIndex;
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -30,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _user = widget._user;
     createUserInFireStore();
+    onPageChanged(widget._screenIndex);
     // TODO: implement initState
     super.initState();
   }
@@ -66,27 +69,28 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       body: PageView(
         children: <Widget>[
-          GalleryScreen(),
+          Gallery(user: _user,),
           EnhanceScreen(user: _user,),
           //ImageSuperResolution(),
           ProfileScreen(
             user: _user,
           ),
-          AccountScreen(
-            user: _user,
-          ),
+        //   AccountScreen(
+        //     user: _user,
+        //   ),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),
       ),
       bottomNavigationBar: BottomNavigationBar(
+          backgroundColor:  Color(0xFF2F455C),
           currentIndex: pageIndex,
           onTap: onTap,
           selectedItemColor: Colors.blue,
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Colors.grey[400],
+          unselectedItemColor: Colors.grey[200],
           selectedFontSize: scaler.getTextSize(8),
           unselectedFontSize: scaler.getTextSize(8),
           items: [
@@ -103,10 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
               label: ('Profile'),
             ),
 
-            BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.user),
-              label: ('Account'),
-            ),
+            // BottomNavigationBarItem(
+            //   icon: FaIcon(FontAwesomeIcons.user),
+            //   label: ('Account'),
+            // ),
           ]),
     );
   }

@@ -15,7 +15,7 @@ class PostTile extends StatelessWidget {
       MaterialPageRoute(
         builder: (context) => PostScreen(
           imageId: post.imageId, ///////////////////////SDDDDDDDDFFFdsfsdfsdfsdf
-          userId: post.ownerId,
+          userId: post.userId,
         ),
       ),
     );
@@ -24,7 +24,11 @@ class PostTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => showPost(context),
+      onTap: () =>showPost(context),
+          
+          //print(post.imageId+" "+post.userId);
+      //},
+      
       child: cachedNetworkImage(post.mediaUrl),
     );
   }

@@ -39,7 +39,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => HomeScreen(
-                            user: user,
+                            user: user, screenIndex: 0,
                           ),
                         ),
                       );

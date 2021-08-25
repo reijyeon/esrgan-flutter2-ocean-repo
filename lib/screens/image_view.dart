@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:esrgan_flutter2_ocean_app/screens/trygallery.dart';
+import 'package:esrgan_flutter2_ocean_app/screens/gallery_screen.dart';
+import 'package:esrgan_flutter2_ocean_app/screens/home_screen.dart';
 //import 'package:esrgan_flutter2_ocean_app/screens/gallery_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _ImageViewState extends State<ImageView> {
     createPostInFirestore(mediaUrl: downloadUrl);
     //Navigator.pushReplacement(context, newRoute)
 
-    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Gallery(user: widget.user)));
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => HomeScreen(user: widget.user, screenIndex: 0)));
   }
 
     createPostInFirestore(
