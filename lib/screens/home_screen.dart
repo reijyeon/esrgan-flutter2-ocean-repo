@@ -15,7 +15,7 @@ import '/widgets/scaler.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required User user, required int screenIndex})
       : _user = user, _screenIndex = screenIndex,
-        super(key: key);
+        super(key: key);    
 
   final User _user;
   final int _screenIndex;
@@ -28,19 +28,21 @@ class _HomeScreenState extends State<HomeScreen> {
   final filename = 'file.txt';
   final orgfilename = 'file.txt';
   late User _user;
+  late int index;
   @override
   void initState() {
     _user = widget._user;
     createUserInFireStore();
-    onPageChanged(widget._screenIndex);
+    //onPageChanged(widget._screenIndex);
+    index = widget._screenIndex;
     // TODO: implement initState
     super.initState();
   }
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  PageController pageController = PageController(initialPage: 0);
-  int pageIndex = 0;
+  PageController pageController = PageController(initialPage: 1);
+  int pageIndex = 1;
 
   @override
   Widget build(BuildContext context) {

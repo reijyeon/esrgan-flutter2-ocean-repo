@@ -208,15 +208,9 @@ selectedImage !=null?
             ),
             TextButton(
               onPressed: (){
-                   //Navigator.of(context).push(Loadig)
-                   
 
-                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
-  );
-                  //uploadImage(context);
-                  
-                  //Navigator.pop(context, uploadImage(context));
-                  
+                    // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)));
+ Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => ImageView(image: selectedImage!, orgImage: selectedImage!, user: widget._user,)));
                   
               },
               child: const Text('Yes'),

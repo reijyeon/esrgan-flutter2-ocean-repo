@@ -5,6 +5,8 @@ import 'package:esrgan_flutter2_ocean_app/screens/home_screen.dart';
 //import 'package:esrgan_flutter2_ocean_app/screens/gallery_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 //import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
@@ -65,26 +67,18 @@ class _ImageViewState extends State<ImageView> {
   @override
   Widget build(BuildContext context) {
     TensorImage imgProp = TensorImage.fromFile(widget.image);
-    
-    
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.red,
-        title: Text('Result'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              //Navigator.pop(context);
-              //Navigator.pop(context);
-              //GallerySaver.saveImage(widget.image.path); //NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED 4 later
-              //print('Saved');
-              //showDialog(context: context, builder: (_) => imageSaved(context)); //NEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEED 4 later
-              showDialog<String>(
+
+        Widget btnExportImage = Container(
+        //margin: EdgeInsets.only(top: 8),
+        child: TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                onPressed: ()=>{
+                                 showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
           title: const Text('Save Image'),
-          content: const Text('Do you want to save image?'),
+          content: const Text('Do you want to save this image in the cloud?'),
           actions: <Widget>[
             TextButton(
               onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
@@ -92,18 +86,94 @@ class _ImageViewState extends State<ImageView> {
               child: const Text('No', style: TextStyle(color: Colors.red),),
             ),
             TextButton(
-              onPressed: uploadImage,//{
+              onPressed: uploadImage,
+              child: const Text('Yes'),
+            ),
+          ],
+        ))
+                },
+                icon: FaIcon(FontAwesomeIcons.cloudDownloadAlt, color: Colors.white,),
+                label: Text("Save Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        ))),
+    );
 
-//                    //Navigator.of(context).push(Loadig)
 
-//                     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => LoadingEnhanceScreen(user: widget._user, selectedImage: selectedImage!,)),
-//   );
-//                   //uploadImage(context);
-                  
-//                   //Navigator.pop(context, uploadImage(context));
-                  
-                  
-              //},
+        Widget btnSImage = Container(
+        //margin: EdgeInsets.only(top: 8),
+        child: TextButton.icon(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue)),
+                onPressed: ()=>{
+                                                showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Export Image'),
+          content: const Text('Do you want to export this image to your device?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
+              
+              child: const Text('No', style: TextStyle(color: Colors.red),),
+            ),
+            TextButton(
+              onPressed: (){
+                           
+              //Navigator.pop(context);
+              //Navigator.pop(context);
+              GallerySaver.saveImage(widget.image.path);
+              //print('Saved');
+              showDialog(context: context, builder: (_) => imageSaved(context));
+        
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ))
+                },
+                icon: FaIcon(FontAwesomeIcons.fileExport, color: Colors.white,),
+                label: Text("Export Image",
+                    style: TextStyle(
+                      color: Colors.white,
+                        ))),
+    );
+
+    
+    return Scaffold(
+      appBar: AppBar(
+          leading: Container(
+              margin: EdgeInsets.only(left: 5),
+              padding: EdgeInsets.all(2),
+child: Image.asset(
+                    "assets/images/esrganFlutterLogo.png",
+                    fit: BoxFit.cover,
+                    //height: 10
+                )
+          ),
+                
+          automaticallyImplyLeading: false,
+          backgroundColor:Color(0xFF2F455C),
+        title: Text('Enhanced Image'),
+        actions: [
+          IconButton(
+            icon: FaIcon(FontAwesomeIcons.trashAlt),
+            onPressed: () {
+                             showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Discard Image'),
+          content: const Text('Do you want to discard the image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () =>  Navigator.of(context).pop(),//Navigator.pop(context, 'Cancel'),
+              
+              child: const Text('No', style: TextStyle(color: Colors.red),),
+            ),
+            TextButton(
+              onPressed: (){
+Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => HomeScreen(user: widget.user, screenIndex: 1)));
+              },
               child: const Text('Yes'),
             ),
           ],
@@ -184,8 +254,22 @@ class _ImageViewState extends State<ImageView> {
             //alignment: Alignment.bottomCenter,
             left: 10,
             right: 10,
-            bottom: 10,
-            child: Slider(
+            bottom: 5,
+            child: Column(
+                children: [
+                
+              Container(
+                  height: 40,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                          btnExportImage,
+                          SizedBox(width: 10,),
+                     // btnSaveImage,
+                      btnSImage,
+                ],),
+              ),
+                    Slider(
             
               value: controller,
               min: 0.0,
@@ -199,12 +283,18 @@ class _ImageViewState extends State<ImageView> {
                 });
               },
             ),
+                ],
+            )
           ),
         ],
       )
     );
   }
 }
+
+
+
+
 
 AlertDialog imageSaved(context) {
   return AlertDialog(

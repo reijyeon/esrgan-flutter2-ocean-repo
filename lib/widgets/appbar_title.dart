@@ -5,11 +5,16 @@ PreferredSizeWidget customAppBar = PreferredSize(
     child: AppBar(
         automaticallyImplyLeading: false,
         leading: 
-                Image.asset(
+             Container(
+                 margin: EdgeInsets.only(left: 5),
+                 padding: EdgeInsets.all(2),
+                 child:
+                    Image.asset(
                     "assets/images/esrganFlutterLogo.png",
                     fit: BoxFit.cover,
                     height: 75
-                ),
+                )
+             ),
 
         title: Row(
             mainAxisAlignment: MainAxisAlignment.end,

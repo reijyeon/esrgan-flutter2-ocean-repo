@@ -25,12 +25,13 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
     String? message = "";
     bool isEnhancing = false; 
     bool isEnhanced = false; 
+    String serverUrl = "http://192.168.100.60:8080";
     
     uploadImage(BuildContext context) async {
         setState(() => isEnhancing = true);
 
         final request = http.MultipartRequest(
-            "POST", Uri.parse("http://192.168.100.60:8080/upload"));
+            "POST", Uri.parse("$serverUrl/upload"));
 
         final headers = {"Content-type": "multipart/form-data"};
 
@@ -54,7 +55,7 @@ class _LoadingEnhanceScreenState extends State<LoadingEnhanceScreen> {
     }
 
     Future<File> _fileFromImageUrl(String imageUrl) async {
-    Uri url = Uri.parse('http://192.168.100.60:8080/download/' + imageUrl);
+    Uri url = Uri.parse('$serverUrl/download/' + imageUrl);
 
     final response = await http.get(url);
 
